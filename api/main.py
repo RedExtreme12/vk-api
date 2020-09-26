@@ -1,4 +1,5 @@
-from user import User
+from api.user import User
+from pprint import pprint
 
 
 if __name__ == '__main__':
@@ -12,6 +13,7 @@ if __name__ == '__main__':
     _user = User(login,
                  password,
                  token,
-                 'https://vk.com/fly__12', )
+                 'https://vk.com/paramime', )
 
-    print(_user.remove_like_photo('saved'))
+    print(_user.add_like_photo('saved', cnt=100))
+    # print(_user.add_comment('Динак идёт пить пиво', 2))

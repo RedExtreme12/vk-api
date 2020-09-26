@@ -1,7 +1,7 @@
 import vk_api
 import time
 
-import API
+from api import API
 
 CURRENT_VERSION_API = 5.103
 NUMBER_RECEIVED_PHOTO = 1000  # Max value
@@ -47,6 +47,18 @@ class User:
 
         return None
 
+    def get_wall(self, _count):
+        if self.api:
+            try:
+                wall = self.api.wall.get(owner_id=self.user_id,
+                                         count=_count)
+            except vk_api.VkApiError as err_msg:
+                print(f'Ooops... Something went wrong, Error message: {err_msg}')
+            else:
+                return wall['items']
+
+        return None
+
     def add_obj_like(self, _type: str, item_id: int, count_of_liked: int) -> int:
         if self.api:
             if not self.obj_is_liked(_type=_type,
@@ -84,6 +96,25 @@ class User:
                                                            count_of_liked=count_of_liked, )
 
         return count_of_liked
+
+    def add_comment(self, comment: list, count: int):
+        import random
+
+        if self.api:
+            try:
+                wall = self.get_wall(10)
+
+                for post in wall:
+                    for _ in range(count):
+                        msg = comment[random.randrange(0, len(comment))]
+
+                        self.api.wall.createComment(owner_id=self.user_id,
+                                                    post_id=post['id'],
+                                                    message=comment)
+                        print('Comment added!')
+
+            except vk_api.VkApiError as msg:
+                print(f'Something went wrong: {msg}')
 
     def remove_obj_like(self, _type: str, item_id: int, count_of_disliked: int):
         if self.api:
